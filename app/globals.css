@@ -114,3 +114,9 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+@layer components {
+  .navbar-link {
+    @apply font-medium text-muted-foreground transition-colors hover:text-primary;
+  }
+}

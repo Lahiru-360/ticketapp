@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Ticket } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 interface Props {
@@ -40,7 +41,9 @@ function DataTable({ tickets }: Props) {
                     data-href="/"
                     className="border-border"
                   >
-                    <TableCell>{ticket.title}</TableCell>
+                    <TableCell>
+                      <Link href={`/tickets/` + ticket.id}>{ticket.title}</Link>
+                    </TableCell>
                     <TableCell className="text-center align-middle">
                       <TicketStatusBadge status={ticket.status} />
                     </TableCell>

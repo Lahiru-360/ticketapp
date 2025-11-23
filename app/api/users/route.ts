@@ -6,17 +6,17 @@ import { getServerSession } from "next-auth";
 import options from "../auth/[...nextauth]/options";
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(options);
+  //   const session = await getServerSession(options);
 
-  if (!session) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 401 });
-  }
+  //   if (!session) {
+  //     return NextResponse.json({ error: "Forbidden" }, { status: 401 });
+  //   }
 
-  const sessionRole = session.user?.role;
+  //   const sessionRole = session.user?.role;
 
-  if (sessionRole != "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 401 });
-  }
+  //   if (sessionRole != "ADMIN") {
+  //     return NextResponse.json({ error: "Forbidden" }, { status: 401 });
+  //   }
 
   const body = await request.json();
 

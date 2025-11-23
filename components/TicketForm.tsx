@@ -49,8 +49,9 @@ function TicketForm({ ticket }: Props) {
       setIsSubmitting(false);
       router.push("/tickets");
       router.refresh();
-    } catch (error) {
-      setError("Unknown Error Occured");
+    } catch (error: any) {
+      console.log(error.response);
+      setError(error.response?.data?.error || "Unknown Error Occured");
       setIsSubmitting(false);
     }
   }
@@ -140,6 +141,7 @@ function TicketForm({ ticket }: Props) {
               )}
             />
           </div>
+          <p className="text-destructive">{error}</p>
           <Button type="submit" disabled={isSubmitting}>
             {ticket ? "Update" : "Create Ticket"}
           </Button>

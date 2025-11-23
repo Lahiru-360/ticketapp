@@ -9,28 +9,61 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Ticket } from "@prisma/client";
-import Link from "next/link";
 import React from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { SearchParams } from "./page";
+import Link from "next/link";
 
 interface Props {
   tickets: Ticket[];
+  searchParams: SearchParams;
 }
 
-function DataTable({ tickets }: Props) {
+function DataTable({ tickets, searchParams }: Props) {
   return (
     <div className="w-full mt-5">
       <div className="rounded-md sm:border border-border">
         <Table>
           <TableHeader>
             <TableRow className="border-border">
-              <TableHead>Title</TableHead>
-
-              <TableHead className="text-center align-middle">Status</TableHead>
+              <TableHead>
+                <Link href={{ query: { ...searchParams, orderBy: "title" } }}>
+                  Title
+                </Link>
+                {"title" === searchParams.orderBy && (
+                  <ArrowDown className="inline p-1" />
+                )}
+              </TableHead>
 
               <TableHead className="text-center align-middle">
-                Priority
+                <Link href={{ query: { ...searchParams, orderBy: "status" } }}>
+                  Status
+                </Link>
+                {"status" === searchParams.orderBy && (
+                  <ArrowDown className="inline p-1" />
+                )}
               </TableHead>
-              <TableHead>Created At</TableHead>
+
+              <TableHead className="text-center align-middle">
+                <Link
+                  href={{ query: { ...searchParams, orderBy: "priority" } }}
+                >
+                  Priority
+                </Link>
+                {"priority" === searchParams.orderBy && (
+                  <ArrowDown className="inline p-1" />
+                )}
+              </TableHead>
+              <TableHead>
+                <Link
+                  href={{ query: { ...searchParams, orderBy: "createdAt" } }}
+                >
+                  Created At
+                </Link>
+                {"createdAt" === searchParams.orderBy && (
+                  <ArrowDown className="inline p-1" />
+                )}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

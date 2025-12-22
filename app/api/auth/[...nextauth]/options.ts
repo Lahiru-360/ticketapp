@@ -25,6 +25,7 @@ const options: NextAuthOptions = {
         }
 
         console.log("User: ", user);
+
         const match = await bcrypt.compare(
           credentials!.password,
           user.password

@@ -2,8 +2,26 @@ import React from "react";
 import { prisma } from "@/prisma/db";
 import DashRecentTickets from "@/components/DashRecentTickets";
 import DashChart from "@/components/DashChart";
+import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
 async function Dashboard() {
+  const prisma = new PrismaClient();
+
+  (async () => {
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        username: "admin",
+        password: await bcrypt.hash("admin@123", 10),
+        role: "ADMIN",
+      },
+    });
+
+    console.log("Admin user created");
+    await prisma.$disconnect();
+  })();
+
   const tickets = await prisma.ticket.findMany({
     where: {
       NOT: [{ status: "CLOSED" }],

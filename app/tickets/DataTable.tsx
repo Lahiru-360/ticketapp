@@ -99,15 +99,9 @@ function DataTable({ tickets, searchParams }: Props) {
                       </TableCell>
                       <TableCell className="text-center align-middle">
                         {ticket.assignedToUserId ? (
-                          <User
-                            className="h-4 w-4 text-green-500 inline"
-                            title="Assigned"
-                          />
+                          <User className="h-4 w-4 text-green-500 inline" />
                         ) : (
-                          <UserX
-                            className="h-4 w-4 text-muted-foreground inline"
-                            title="Unassigned"
-                          />
+                          <UserX className="h-4 w-4 text-muted-foreground inline" />
                         )}
                       </TableCell>
                       <TableCell>

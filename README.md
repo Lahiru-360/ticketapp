@@ -226,24 +226,6 @@ This ticketing system provides a unified platform for managing internal technica
 7. **Access the application**
    Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### Demo Credentials
-
-Once the database is set up, you can use these demo credentials (or create your own through the user management interface):
-
-- **Admin User**
-
-  - Username: `admin`
-  - Password: `admin123`
-
-- **Tech Support User**
-
-  - Username: `tech`
-  - Password: `tech123`
-
-- **Regular User**
-  - Username: `user`
-  - Password: `user123`
-
 ## Project Structure
 
 ```
@@ -319,12 +301,6 @@ ticketapp/
 
 ## Contributing
 
-This is a demonstration project for internal company use. For modifications or contributions, please contact the development team.
+This is a demonstration project for internal company use. For modifications or contributions, please contact the developer.
 
-## License
-
-This project is proprietary and intended for internal company use only.
-
-## Support
-
-For issues or questions about the ticketing system, contact your IT administrator or the development team.
+**Author:** Lahiru Hettiarachchi (Developer)

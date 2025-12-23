@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Cell,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,6 +20,12 @@ interface dataElements {
   name: Status;
   total: number;
 }
+
+const STATUS_COLORS: Record<Status, string> = {
+  OPEN: "#3b82f6", // blue
+  STARTED: "#eab308", // yellow
+  CLOSED: "#22c55e", // green
+};
 
 function DashChart({ data }: dataProps) {
   console.log(data);
@@ -44,7 +51,11 @@ function DashChart({ data }: dataProps) {
               axisLine={false}
             />
             <Tooltip />
-            <Bar dataKey="total" fill="#6D28D9" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="total" radius={[4, 4, 0, 0]}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name]} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

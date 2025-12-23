@@ -10,7 +10,9 @@ async function ViewTicket({ params }: Props) {
     where: { id: parseInt(params.id) },
   });
 
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({
+    where: { role: "TECH" },
+  });
 
   if (!ticket) {
     return <p className="text-destructive">Ticket Not Found</p>;

@@ -139,7 +139,13 @@ function UserForm({ user }: Props) {
           </div>
           <p className="text-destructive ">{error}</p>
           <Button type="submit" disabled={isSubmitting}>
-            {user ? "Update User" : "Create user"}
+            {isSubmitting
+              ? user
+                ? "Updating..."
+                : "Creating..."
+              : user
+              ? "Update User"
+              : "Create User"}
           </Button>
         </form>
       </Form>

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Ticket } from "@prisma/client";
 import React from "react";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, User, UserX } from "lucide-react";
 import { SearchParams } from "./page";
 import Link from "next/link";
 import EmptyState from "@/components/EmptyState";
@@ -63,6 +63,9 @@ function DataTable({ tickets, searchParams }: Props) {
                     <ArrowDown className="inline p-1" />
                   )}
                 </TableHead>
+                <TableHead className="text-center align-middle">
+                  Assigned
+                </TableHead>
                 <TableHead>
                   <Link
                     href={{ query: { ...searchParams, orderBy: "createdAt" } }}
@@ -93,6 +96,19 @@ function DataTable({ tickets, searchParams }: Props) {
                       </TableCell>
                       <TableCell className="text-center align-middle">
                         <TicketPriority priority={ticket.priority} />
+                      </TableCell>
+                      <TableCell className="text-center align-middle">
+                        {ticket.assignedToUserId ? (
+                          <User
+                            className="h-4 w-4 text-green-500 inline"
+                            title="Assigned"
+                          />
+                        ) : (
+                          <UserX
+                            className="h-4 w-4 text-muted-foreground inline"
+                            title="Unassigned"
+                          />
+                        )}
                       </TableCell>
                       <TableCell>
                         {ticket.createdAt.toLocaleDateString("en-us", {

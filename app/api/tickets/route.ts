@@ -11,6 +11,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 401 });
   }
 
+  if (session.user.role !== "USER") {
+    return NextResponse.json(
+      { error: "Only users can create tickets" },
+      { status: 403 }
+    );
+  }
+
   const body = await request.json();
   const validation = ticketSchema.safeParse(body);
   if (!validation.success) {
@@ -20,6 +27,7 @@ export async function POST(request: NextRequest) {
   const newTicket = await prisma?.ticket.create({
     data: {
       ...body,
+      userId: session.user.id,
     },
   });
 

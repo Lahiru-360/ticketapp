@@ -4,6 +4,9 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const options: NextAuthOptions = {
+  pages: {
+    signIn: "/api/auth/login",
+  },
   providers: [
     CredentialsProvider({
       id: "password",
@@ -41,14 +44,19 @@ const options: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      if (account) {
-        token.role = user.role;
+      if (user) {
+        token.id = (user as any).id;
+        token.role = (user as any).role;
+        token.username = (user as any).username;
       }
       return token;
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role || "USER";
+        session.user.id = token.id as number;
+        session.user.role = (token.role as string) || "USER";
+        session.user.username =
+          (token.username as string) || session.user.username;
       }
       return session;
     },

@@ -1,10 +1,18 @@
 import React from "react";
 import { prisma } from "@/prisma/db";
-import DataTable from "./DataTable";
+import DataTable from "@/app/tickets/DataTable";
 import Pagination from "@/components/Pagination";
-import StatusFilter from "@/components/StatusFilter";
 import { Status, Ticket } from "@prisma/client";
-import NewTicketButton from "./NewTicketButton";
+import { getServerSession } from "next-auth";
+import options from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export interface SearchParams {
   page: string;
@@ -12,7 +20,13 @@ export interface SearchParams {
   orderBy: keyof Ticket;
 }
 
-async function Tickets({ searchParams }: { searchParams: SearchParams }) {
+async function MyTickets({ searchParams }: { searchParams: SearchParams }) {
+  const session = await getServerSession(options);
+
+  if (!session || session.user.role !== "USER") {
+    redirect("/");
+  }
+
   const pageSize = 10;
   const page = parseInt(searchParams.page) || 1;
   const status = searchParams.status;
@@ -24,6 +38,7 @@ async function Tickets({ searchParams }: { searchParams: SearchParams }) {
 
   const tickets = await prisma.ticket.findMany({
     where: {
+      userId: session.user.id,
       status:
         status == "0"
           ? { not: "CLOSED" }
@@ -38,6 +53,7 @@ async function Tickets({ searchParams }: { searchParams: SearchParams }) {
 
   const ticketCount = await prisma.ticket.count({
     where: {
+      userId: session.user.id,
       status:
         status == "0"
           ? { not: "CLOSED" }
@@ -48,16 +64,25 @@ async function Tickets({ searchParams }: { searchParams: SearchParams }) {
   });
 
   return (
-    <div>
-      <div className="flex justify-between">
-        <NewTicketButton />
+    <div className="space-y-4 px-2">
+      <Card className="border-border">
+        <CardHeader>
+          <CardTitle>My Tickets</CardTitle>
+          <CardDescription>
+            Tickets you have created and submitted
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Total: {ticketCount} ticket{ticketCount !== 1 ? "s" : ""}
+          </p>
+        </CardContent>
+      </Card>
 
-        <StatusFilter />
-      </div>
       <DataTable tickets={tickets} searchParams={searchParams} />
       <Pagination itemCount={ticketCount} pageSize={10} currentPage={page} />
     </div>
   );
 }
 
-export default Tickets;
+export default MyTickets;

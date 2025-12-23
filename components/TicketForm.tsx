@@ -19,6 +19,8 @@ import {
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Ticket } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import ReactMarkDown from "react-markdown";
 
 type TicketFormData = z.infer<typeof ticketSchema>;
 
@@ -27,6 +29,15 @@ interface Props {
 }
 
 function TicketForm({ ticket }: Props) {
+  const { data: session } = useSession();
+  const role = session?.user?.role;
+  const userId = session?.user?.id;
+  const isEdit = !!ticket;
+  const isOwner = ticket && userId === ticket.userId;
+  const isTech = role === "TECH";
+  const isUser = role === "USER";
+  const disableStatus = !isEdit || isUser; // status is disabled on creation and for user on edit
+  const disableNonStatus = isEdit && isTech; // tech can only change status when editing
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -70,7 +81,11 @@ function TicketForm({ ticket }: Props) {
               <FormItem>
                 <FormLabel>Ticket Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ticket Title..." {...field} />
+                  <Input
+                    placeholder="Ticket Title..."
+                    {...field}
+                    disabled={disableNonStatus}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -80,14 +95,29 @@ function TicketForm({ ticket }: Props) {
             control={form.control}
             defaultValue={ticket?.description}
             render={({ field }) => (
-              <SimpleMDE placeholder="Description" {...field} />
+              <div className="simplemde-wrapper">
+                {disableNonStatus ? (
+                  <div className="rounded-md border border-border bg-muted/30 p-3 prose dark:prose-invert min-h-[120px]">
+                    <ReactMarkDown>{field.value || ""}</ReactMarkDown>
+                  </div>
+                ) : (
+                  <SimpleMDE
+                    placeholder="Description"
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={{
+                      spellChecker: false,
+                    }}
+                  />
+                )}
+              </div>
             )}
           />
           <div className="flex w-full space-x-4">
             <FormField
               control={form.control}
               name="status"
-              defaultValue={ticket?.status}
+              defaultValue={ticket?.status || "OPEN"}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
@@ -96,7 +126,7 @@ function TicketForm({ ticket }: Props) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={disableStatus}>
                         <SelectValue
                           placeholder="Status..."
                           defaultValue={ticket?.status}
@@ -124,7 +154,7 @@ function TicketForm({ ticket }: Props) {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger disabled={disableNonStatus}>
                         <SelectValue
                           placeholder="Priority..."
                           defaultValue={ticket?.priority}
@@ -143,7 +173,13 @@ function TicketForm({ ticket }: Props) {
           </div>
           <p className="text-destructive">{error}</p>
           <Button type="submit" disabled={isSubmitting}>
-            {ticket ? "Update" : "Create Ticket"}
+            {isSubmitting
+              ? ticket
+                ? "Updating..."
+                : "Creating..."
+              : ticket
+              ? "Update Ticket"
+              : "Create Ticket"}
           </Button>
         </form>
       </Form>

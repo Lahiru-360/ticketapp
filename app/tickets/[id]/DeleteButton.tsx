@@ -50,7 +50,7 @@ function DeleteButton({ ticketId }: Props) {
             })} mt-2 lg:mt-0 `}
             disabled={deleting}
           >
-            Delete ticket
+            {deleting ? "Deleting..." : "Delete Ticket"}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -62,14 +62,15 @@ function DeleteButton({ ticketId }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className={`${buttonVariants({
                 variant: "destructive",
               })}`}
               onClick={handleSubmit}
+              disabled={deleting}
             >
-              Continue
+              {deleting ? "Deleting..." : "Continue"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

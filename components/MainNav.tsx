@@ -1,25 +1,42 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ToggleMode from "./ToggleMode";
 import MainNavLinks from "./MainNavLinks";
-import { getServerSession } from "next-auth";
-import options from "@/app/api/auth/[...nextauth]/options";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
-async function MainNav() {
-  const session = await getServerSession(options);
+export default function MainNav() {
+  const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    await signOut({ redirect: true, callbackUrl: "/" });
+  };
+
   return (
     <div className="flex justify-between">
-      <MainNavLinks role={session?.user.role} />
+      <MainNavLinks role={session?.user?.role} />
       <div className="flex items-center gap-2">
-        {session ? (
-          <Link href="/api/auth/signout?callbackUrl=/">Logout</Link>
+        {status === "authenticated" ? (
+          <Button
+            onClick={handleLogout}
+            disabled={isLoading}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            {isLoading ? "Logging out..." : "Logout"}
+          </Button>
         ) : (
-          <Link href="/api/auth/signin">Login</Link>
+          <Link href="/api/auth/login">
+            <Button className="bg-red-600 hover:bg-red-700 text-white">
+              Login
+            </Button>
+          </Link>
         )}
         <ToggleMode />
       </div>
     </div>
   );
 }
-
-export default MainNav;

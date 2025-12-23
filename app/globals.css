@@ -63,4 +63,40 @@
   .navbar-link {
     @apply font-medium text-muted-foreground transition-colors hover:text-primary;
   }
+  /* ===== EasyMDE Dark Mode Fix ===== */
+
+  .dark .CodeMirror {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dark .editor-toolbar {
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
+  }
+
+  .dark .editor-toolbar button {
+    color: hsl(var(--foreground));
+  }
+
+  .dark .editor-toolbar button:hover {
+    background-color: hsl(var(--muted));
+  }
+
+  .dark .CodeMirror-cursor {
+    border-left: 1px solid hsl(var(--foreground));
+  }
+
+  .dark .CodeMirror-selected {
+    background-color: hsl(var(--muted));
+  }
+
+  .dark .CodeMirror-gutters {
+    background-color: hsl(var(--background));
+    border-right: 1px solid hsl(var(--border));
+  }
+  .dark .editor-preview {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
 }

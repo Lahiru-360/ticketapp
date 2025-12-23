@@ -15,13 +15,22 @@ import TicketPriority from "@/components/TicketPriority";
 import ReactMarkDown from "react-markdown";
 import DeleteButton from "./DeleteButton";
 import AssignTicket from "@/components/AssignTicket";
+import { getServerSession } from "next-auth";
+import options from "@/app/api/auth/[...nextauth]/options";
 
 interface Props {
   ticket: Ticket;
   users: User[];
 }
 
-function TicketDetail({ ticket, users }: Props) {
+async function TicketDetail({ ticket, users }: Props) {
+  const session = await getServerSession(options);
+  const role = session?.user?.role;
+  const userId = session?.user?.id;
+  const isOwner = userId === ticket.userId;
+  const canEdit = role === "TECH" || (role === "USER" && isOwner);
+  const canDelete = role === "ADMIN" || (role === "USER" && isOwner);
+  console.log("User Role: ", role);
   return (
     <div className="lg:grid lg:grid-cols-4">
       <Card className="border border-border mx-4 mb-4 lg:col-span-3 lg:mr-4">
@@ -59,14 +68,18 @@ function TicketDetail({ ticket, users }: Props) {
         </CardFooter>
       </Card>
       <div className="flex lg:flex-col mx-4 lg:mx-0 gap-2">
-        <AssignTicket ticket={ticket} users={users} />
-        <Link
-          href={"/tickets/edit/" + ticket.id}
-          className={`${buttonVariants({ variant: "default" })} mt-2 `}
-        >
-          Edit Ticket
-        </Link>
-        <DeleteButton ticketId={ticket.id} />
+        {role === "ADMIN" && <AssignTicket ticket={ticket} users={users} />}
+
+        {canEdit && (
+          <Link
+            href={"/tickets/edit/" + ticket.id}
+            className={`${buttonVariants({ variant: "default" })} mt-2 `}
+          >
+            Edit Ticket
+          </Link>
+        )}
+
+        {canDelete && <DeleteButton ticketId={ticket.id} />}
       </div>
     </div>
   );

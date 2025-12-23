@@ -26,10 +26,15 @@ function AssignTicket({ ticket, users }: { ticket: Ticket; users: User[] }) {
       .patch(`/api/tickets/${ticket.id}`, {
         assignedToUserId: userId == "0" ? "0" : userId,
       })
+      .then(() => {
+        router.refresh();
+      })
       .catch((error) => {
         setError("Unable to assign Ticket.");
+      })
+      .finally(() => {
+        setIsAssigning(false);
       });
-    setIsAssigning(false);
   }
   return (
     <>

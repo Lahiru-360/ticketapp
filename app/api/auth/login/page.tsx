@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,15 +23,15 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
+    const result = await signIn("password", {
+      username,
       password,
       redirect: false,
       callbackUrl,
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError("Invalid username or password");
       setIsLoading(false);
     } else if (result?.ok) {
       router.push(callbackUrl);
@@ -39,21 +39,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
+    <div className="max-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Ticket Manager</h1>
-          <p className="text-slate-300">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Ticket Manager
+          </h1>
+          <p className="text-muted-foreground">Sign in to your account</p>
         </div>
 
         {/* Card */}
-        <Card className="bg-slate-800 border-slate-700 shadow-2xl">
+        <Card className="bg-card border border-border shadow-2xl">
           <div className="p-8">
             {/* Error Alert */}
             {error && (
-              <Alert className="mb-6 bg-red-900/20 border-red-500/50">
-                <AlertDescription className="text-red-400">
+              <Alert className="mb-6 bg-destructive/10 border-destructive">
+                <AlertDescription className="text-destructive">
                   {error}
                 </AlertDescription>
               </Alert>
@@ -62,22 +64,22 @@ export default function LoginPage() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Email
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Username
                 </label>
                 <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  placeholder="john_doe"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
-                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Password
                 </label>
                 <Input
@@ -86,43 +88,75 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   required
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2"
-              >
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-slate-700/50 rounded-lg border border-slate-600">
-              <p className="text-xs font-semibold text-slate-300 mb-2">
-                Demo Credentials:
+            {/* Demo Access */}
+            <div className="mt-6 rounded-lg border border-border bg-secondary/60 p-4">
+              <p className="text-sm font-medium text-foreground mb-3">
+                Demo Access (For Reviewers)
               </p>
-              <p className="text-xs text-slate-400 mb-1">
-                Email:{" "}
-                <span className="text-slate-200 font-mono">
-                  demo@example.com
+              <p className="text-xs text-muted-foreground mb-3">
+                Click to auto-fill credentials
+              </p>
+
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">
+                  Admin Account
                 </span>
-              </p>
-              <p className="text-xs text-slate-400">
-                Password:{" "}
-                <span className="text-slate-200 font-mono">password123</span>
-              </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername("admin");
+                    setPassword("admin@123");
+                  }}
+                  className="text-sm font-medium text-primary hover:opacity-80 transition"
+                >
+                  Use
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">
+                  Tech Account
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername("tech@1");
+                    setPassword("tech@123");
+                  }}
+                  className="text-sm font-medium text-primary hover:opacity-80 transition"
+                >
+                  Use
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  User Account
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername("user@1");
+                    setPassword("user@123");
+                  }}
+                  className="text-sm font-medium text-primary hover:opacity-80 transition"
+                >
+                  Use
+                </button>
+              </div>
             </div>
           </div>
         </Card>
-
-        {/* Footer */}
-        <p className="text-center text-slate-400 text-sm mt-6">
-          © 2025 Ticket Manager. All rights reserved.
-        </p>
       </div>
     </div>
   );
